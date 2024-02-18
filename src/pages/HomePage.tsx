@@ -59,16 +59,23 @@ export const HomePage = () => {
             <th style={{ width: 100 }}>ID</th>
             <th style={{ width: 150 }}>Name</th>
             <th>Image</th>
+            <th>Height</th>
+            <th>Weight</th>
+            <th>Abilities</th>
           </tr>
         </thead>
         <tbody>
-          {filteredPokemos().map(({ id, name, pic }) => (
+          {filteredPokemos().map(({ id, name, pic, height, weight, abilities }) => (
             <tr key={id}>
               <td>{id}</td>
               <td>{name}</td>
               <td>
                 <img src={pic} alt={name} style={{ height: 75 }} />
               </td>
+              <td>{height}</td>
+              <td>{weight}</td>
+              <td>{abilities}</td>
+              
             </tr>
           ))}
         </tbody>

@@ -7,11 +7,17 @@ export interface FetchAllPokemonResponse {
 
 export interface SmallPokemon {
     name: string;
+    height: number;
     url:  string;
+    abilities: string[];
 }
 
 export interface Pokemon{
     id:string;
     name:string;
     pic:string;
+    height:number;
+    weight:number;
+    abilities:string[];
+
 }
