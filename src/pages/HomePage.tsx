@@ -1,29 +1,25 @@
 import React, { useState, ChangeEvent } from "react";
 import { Loading } from "../components/Loading";
-import { usePokemon } from "../hooks/usePokemon";
+import { usePokemonData } from "../hooks/usePokemon";
 import { Pokemon } from "../interfaces/fetchAllPokemonResponse";
 
 export const HomePage = () => {
-  // Custom Hook to get all Pokemon with their useEffect
-  const { isLoading, pokemons } = usePokemon();
+  const { isLoading, pokemons } = usePokemonData();
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState("");
 
-  const filteredPokemos = (): Pokemon[] => {
-    if (search.length === 0)
-      return pokemons.slice(currentPage, currentPage + 5);
+  const filteredPokemons = (): Pokemon[] => {
+    const filteredList = search.length === 0 ?
+      pokemons :
+      pokemons.filter((poke) => poke.name.includes(search));
 
-    //Search Input with data
-    const filtered = pokemons.filter((poke) => poke.name.includes(search));
-    return filtered.slice(currentPage, currentPage + 5);
+    return filteredList.slice(currentPage, currentPage + 5);
   };
 
+  const nextPageDisabled = pokemons.filter((poke) => poke.name.includes(search)).length <= currentPage + 5;
+
   const nextPage = () => {
-    if (
-      pokemons.filter((poke) => poke.name.includes(search)).length >
-      currentPage + 5
-    )
-      setCurrentPage(currentPage + 5);
+    if (!nextPageDisabled) setCurrentPage(currentPage + 5);
   };
 
   const prevPage = () => {
@@ -36,51 +32,63 @@ export const HomePage = () => {
   };
 
   return (
-    <div className="mt-5">
-      <h1>Pokémon List</h1>
-      <hr />
+    <div className="mt-5 p-4 lg:px-8 lg:py-12 rounded" style={{ backgroundColor: '#D04848' }}>
+      <h1 className="text-3xl font-semibold text-center mb-4">Pokémon List</h1>
+      <hr className="mb-4" />
       <input
-        className="mb-2 form-control"
+        className="mb-2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 w-full"
         type="text"
-        placeholder="Pokémon Search"
+        placeholder="Search Pokémon"
         value={search}
         onChange={onSearchChange}
       />
-      <button className="btn btn-primary" onClick={prevPage}>
-        Previous
-      </button>
-      &nbsp;
-      <button className="btn btn-primary" onClick={nextPage}>
-        Next
-      </button>
-      <table className="table">
-        <thead>
-          <tr>
-            <th style={{ width: 100 }}>ID</th>
-            <th style={{ width: 150 }}>Name</th>
-            <th>Image</th>
-            <th>Height</th>
-            <th>Weight</th>
-            <th>Abilities</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredPokemos().map(({ id, name, pic, height, weight, abilities }) => (
-            <tr key={id}>
-              <td>{id}</td>
-              <td>{name}</td>
-              <td>
-                <img src={pic} alt={name} style={{ height: 75 }} />
-              </td>
-              <td>{height}</td>
-              <td>{weight}</td>
-              <td>{abilities}</td>
-              
+      <div className="flex flex-col lg:flex-row justify-center lg:justify-between items-center space-y-4 lg:space-y-0 lg:space-x-4 mb-4">
+        <button
+          className="btn btn-primary disabled:opacity-50 w-full lg:w-auto"
+          onClick={prevPage}
+          disabled={currentPage === 0}
+        >
+          Previous
+        </button>
+        <button
+          className="btn btn-primary disabled:opacity-50 w-full lg:w-auto"
+          onClick={nextPage}
+          disabled={nextPageDisabled}
+        >
+          Next
+        </button>
+      </div>
+      <div className="overflow-x-auto rounded" style={{ backgroundColor: '#F3B95F'  }}>
+        <table className="table w-full">
+          <thead>
+            <tr>
+              <th className="w-20">ID</th>
+              <th className="w-40">Name</th>
+              <th>Image</th>
+              <th>Height</th>
+              <th>Weight</th>
+              <th>Abilities</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredPokemons().map(({ id, name, pic, height, weight, abilities }) => (
+              <tr key={id}>
+                <td>{id}</td>
+                <td>{name}</td>
+                <td>
+                  <img src={pic} alt={name} className="h-12" />
+                </td>
+                <td>{height} m</td>
+                <td>{weight} lbs</td>
+                <td>{abilities.join(", ")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {isLoading && <Loading />}
     </div>
   );
 };
+
+export default HomePage;
