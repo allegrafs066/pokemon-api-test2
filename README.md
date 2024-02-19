@@ -46,9 +46,9 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Technologies Used
-*React
-*Redux
-*Redux Thunk
-*Axios
-*Tailwind CSS
-*TypeScript
+* React
+* Redux
+* Redux Thunk
+* Axios
+* Tailwind CSS
+* TypeScript
